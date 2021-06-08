@@ -15,7 +15,7 @@ assignees: ''
 - [ ] License & Visibility match
 - [ ] Publication date included
 -----------------------------------
-Please check all curation treatments performed on this submission. 
+**Please check all curation treatments performed on this submission.** 
 
 Record level:
 - [ ] Request title change
