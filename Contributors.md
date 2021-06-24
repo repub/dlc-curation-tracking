@@ -2,19 +2,16 @@
 
 ### Quick Links
 
-#### Assistant Instructions:
+#### Instructions:
 
-[Setting up a new submission](#setting-up-a-new-submission)
+[Setting up a new submission](#setting-up-a-new-submission) 
 
 [Initial Review](#initial-review)
-
-[Labels](#labels)
-
-#### Curator Instructions:
 
 [Curation Review](#curation-review)
 
 [Labels](#labels)
+
 
 ## Setting up a new submission
 
