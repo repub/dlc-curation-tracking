@@ -14,9 +14,10 @@ assignees: ''
 - [ ] Keywords
 - [ ] License & Visibility match
 - [ ] Publication date included
-- [ ] Initial Check of file(s) (opens, sensitive info)
+- [ ] Initial check of file(s) (opens, sensitive info)
 -----------------------------------
-**Please check all curation treatments performed on this submission.** 
+
+## Please select or describe curation treatments applied to this submission: 
 
 Record level:
 - [ ] Request title change
