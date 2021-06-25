@@ -4,7 +4,7 @@ This is a curated list of links to assist curation locally
 
 ## Templates
 
-[Email Template Generator]()
+[Email Template Generator](https://repub.github.io/dlc-curation-emailer/)
 
 [ReadMe Template]()
 
