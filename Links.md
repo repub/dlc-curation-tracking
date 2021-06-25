@@ -6,7 +6,7 @@ This is a curated list of links to assist curation locally
 
 [Email Template Generator](https://repub.github.io/dlc-curation-emailer/)
 
-[ReadMe Template]()
+[ReadMe Template](https://github.com/psu-libraries/scholarsphere/wiki/README-Guide)
 
 ## Preservation Considerations
 
