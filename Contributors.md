@@ -2,8 +2,6 @@
 
 ### Quick Links
 
-#### Instructions:
-
 [Setting up a new submission](#setting-up-a-new-submission) 
 
 [Initial Review](#initial-review)
