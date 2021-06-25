@@ -8,6 +8,10 @@ This is a curated list of links to assist curation locally
 
 [ReadMe Template]()
 
+## Preservation Considerations
+
+[Library of Congress recommended formats](https://www.loc.gov/preservation/resources/rfs/TOC.html)
+
 ## Data Curation Primers
 
 [Atlas Ti](https://github.com/DataCurationNetwork/data-primers/blob/master/Atlas.ti%20Data%20Curation%20Primer/AtlasTI-data-curation-primer.md)
