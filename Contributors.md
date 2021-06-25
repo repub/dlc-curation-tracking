@@ -8,7 +8,7 @@
 
 [Initial Review](#initial-review)
 
-[Curation Review](#curation-review)
+[Curation Review for Specialists](#curation-review-for-specialists)
 
 [Labels](#labels)
 
@@ -17,9 +17,15 @@
 
 New submissions are entered twice each week by the assistant or designated others from our team if an assistant isn't available. Please use the follwing guidlines to set up an issue for each new submission.
 
-1. Please use the "basic submission" template. You will find this by going to the [Issues]() tab and selecting "new issue" which is a green button on the right side of your screen, then select the green "get started" button.
+1. Please use the "basic submission" template.
 
-2. Next fill in the link template: [CreatorLastName] (URL). Simply copy/paste the last name of the creator and the URL to the deposit in ScholarSphere. You will leave the brackets and parenthesis, because they create the link. Note: There is no space between the second bracket and first parenthesis.
+- You will find this by going to the [Issues]() tab and selecting "new issue" which is a green button on the right side of your screen, then select the green "get started" button.
+
+2. Next fill in the link template: 
+
+- **Title**: Please use the first 3-5 words in the submission title.
+
+- **[CreatorLastName] (URL)**: Simply copy/paste the last name of the creator and the URL to the deposit in ScholarSphere. You will leave the brackets and parenthesis, because they create the link. Note: There is no space between the second bracket and first parenthesis.
 
 3. The submission card (Issue) is now ready for the initial review. 
 
@@ -45,7 +51,7 @@ Submissions that are fully checked will then be reviewed by a curator for comple
 
 You may optionally write appropriate messages or quesitons under a ticket.
 
-## Curation Review
+## Curation Review for Specialists
 
 1. Please select or describe any curation action performed for a submission. 
 
