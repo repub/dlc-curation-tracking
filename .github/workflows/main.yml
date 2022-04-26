@@ -24,3 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: repub/dlc-scholarbot@v0.1
+        env:
+          AIRTABLE_APIKEY: ${{secrets.AIRTABLE_APIKEY}}
+          AIRTABLE_BASEID: ${{secrets.AIRTABLE_BASEID}}
