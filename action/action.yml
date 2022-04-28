@@ -1,0 +1,5 @@
+name: "sync"
+description: "sync new deposits to airtable"
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

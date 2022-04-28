@@ -1,3 +1,4 @@
+# Workflow to update ScholarSphere Curation records in Airtable
 name: Airtable Sync
 on:
   schedule:
@@ -11,7 +12,8 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: repub/dlc-scholarbot@v0.2
+      - uses: actions/checkout@v3
+      - uses: ./action/action.yml
         env:
           AIRTABLE_APIKEY: ${{secrets.AIRTABLE_APIKEY}}
           AIRTABLE_BASEID: ${{secrets.AIRTABLE_BASEID}}
