@@ -1,4 +1,4 @@
-module github.com/repub/dlc-curation-tracking
+module github.com/repub/dlc-curation-tracking/action
 
 go 1.18
 
