@@ -1,7 +1,5 @@
-## dlc-curation-tracking-21
+# ScholarSphere Curation Tracking
 
-**Start Date:** July 1, 2021
+This repository is primarily used to host a GitHub Action that adds new tasks to an Airtable database each day. See:
 
-**End Date:**
-
-Simplified and updated tracking for curation of ScholarSphere deposits.
+- [ScholarSphere Submission Review](https://airtable.com/appDpmUjoSLxLZjAz/tblJ9hOdaZePKFg3S/viwKLXfSf5deWJeC7?blocks=hide)
