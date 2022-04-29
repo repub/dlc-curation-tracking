@@ -17,3 +17,4 @@ jobs:
         env:
           AIRTABLE_APIKEY: ${{secrets.AIRTABLE_APIKEY}}
           AIRTABLE_BASEID: ${{secrets.AIRTABLE_BASEID}}
+          SYNC_DAYSAGO: "60"
