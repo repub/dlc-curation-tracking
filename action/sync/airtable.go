@@ -9,19 +9,16 @@ import (
 )
 
 const (
+	// Airtable columns set during sync
 	COL_ID             = "ID"
 	COL_TITLE          = "Submission Title"
 	COL_LINK           = "Submission Link"
 	COL_DEPOSITOR_ID   = "Depositor"
 	COL_DEPOSITOR_NAME = "Depositor Name"
 	COL_DEPOSIT_DATE   = "Deposit Date"
-	COL_STATUS         = "Status"
-	COL_LABELS         = "Labels"
-	COL_CURATOR        = "Curation By"
-	COL_COMMENTS       = "Comments"
 )
 
-type curateMgr struct {
+type airClient struct {
 	air    *airtable.Client
 	baseId string // airtable baseID
 	table  string // airtable table name for
@@ -32,18 +29,17 @@ type curateTask struct {
 	airRecord *airtable.Record
 }
 
-var ErrTaskNotFound = errors.New("Task not found")
-var ErrTaskExists = errors.New("Task already exists")
+var errTaskNotFound = errors.New("Task not found")
 
-func NewAirtableCurateMgr(key string, baseID string, table string) *curateMgr {
-	return &curateMgr{
+func newAirClient(key string, baseID string, table string) *airClient {
+	return &airClient{
 		air:    airtable.NewClient(key),
 		baseId: baseID,
 		table:  table,
 	}
 }
 
-func (mgr *curateMgr) GetTaskFor(ctx context.Context, scholarID string) (*curateTask, error) {
+func (mgr *airClient) getTaskFor(ctx context.Context, scholarID string) (*curateTask, error) {
 	tbl := mgr.air.GetTable(mgr.baseId, mgr.table)
 	filter := fmt.Sprintf("{ID}='%s'", scholarID)
 	recs, err := tbl.GetRecords().WithFilterFormula(filter).MaxRecords(1).Do()
@@ -51,7 +47,7 @@ func (mgr *curateMgr) GetTaskFor(ctx context.Context, scholarID string) (*curate
 		return nil, err
 	}
 	if len(recs.Records) == 0 {
-		return nil, ErrTaskNotFound
+		return nil, errTaskNotFound
 	}
 	return &curateTask{
 		ID:        scholarID,
@@ -59,7 +55,7 @@ func (mgr *curateMgr) GetTaskFor(ctx context.Context, scholarID string) (*curate
 	}, nil
 }
 
-func (mgr *curateMgr) addRecor(ctx context.Context, vals map[string]any) error {
+func (mgr *airClient) addRecor(ctx context.Context, vals map[string]any) error {
 	tbl := mgr.air.GetTable(mgr.baseId, mgr.table)
 	_, err := tbl.AddRecords(&airtable.Records{
 		Records: []*airtable.Record{
@@ -74,9 +70,10 @@ func (mgr *curateMgr) addRecor(ctx context.Context, vals map[string]any) error {
 	return nil
 }
 
-func (mgr *curateMgr) Upsert(ctx context.Context, scholarID string, vals map[string]any) error {
-	task, err := mgr.GetTaskFor(ctx, scholarID)
-	if err != nil && !errors.Is(err, ErrTaskNotFound) {
+// create or update values for task for scholarID
+func (mgr *airClient) upsert(ctx context.Context, scholarID string, vals map[string]any) error {
+	task, err := mgr.getTaskFor(ctx, scholarID)
+	if err != nil && !errors.Is(err, errTaskNotFound) {
 		return err
 	}
 	if task != nil {

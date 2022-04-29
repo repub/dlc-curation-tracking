@@ -18,7 +18,10 @@ const (
 	timeLayout = "January 2, 2006 15:04"
 )
 
-// deposit is a work or collection in ScholarSphere
+var errResourceNotFound = errors.New("resource not found")
+var errNotWork = errors.New("resource not a work")
+
+// deposit is a resource from the catalog - may be collection or work
 type deposit struct {
 	ID          string
 	Title       string
@@ -26,6 +29,7 @@ type deposit struct {
 	Link        string
 }
 
+// workMeta represents metadata for Works from the GraphQL endpoint.
 type workMeta struct {
 	ID          string `graphql:"id"`
 	Title       string
@@ -40,57 +44,63 @@ type workMeta struct {
 	}
 }
 
-// catalogResp is scholarsphere catalog.json response
-type catalogResp struct {
-	Links struct {
-		Self string `json:"self"`
-		Next string `json:"next"`
-		Last string `json:"last"`
-	} `json:"links"`
-	Meta struct {
-		Pages struct {
-			CurrentPage int  `json:"current_page"`
-			NextPage    int  `json:"next_page"`
-			PrevPage    int  `json:"prev_page"`
-			TotalPages  int  `json:"total_pages"`
-			LimitValue  int  `json:"limit_value"`
-			OffsetValue int  `json:"offset_value"`
-			TotalCount  int  `json:"total_count"`
-			FirstPage   bool `json:"first_page?"`
-			LastPage    bool `json:"last_page?"`
-		} `json:"pages"`
-	} `json:"meta"`
-	Data []catalogItem `json:"data"`
-}
-
-type catalogItem struct {
-	ID         string `json:"id"`
-	Type       string `json:"type"`
-	Attributes struct {
-		Title     attr `json:"title_tesim"`
-		Deposited attr `json:"deposited_at_dtsi"`
-	} `json:"attributes"`
-	Links struct {
-		Self string `json:"self"`
-	} `json:"links"`
-}
-
-type attr struct {
-	ID         string `json:"id"`
-	Type       string `json:"type"`
-	Attributes struct {
-		Value interface{} `json:"value"`
-		Label string      `json:"label"`
-	} `json:"attributes"`
-}
-
+// return default http client used by getDepositsAfter
 func httpClient() *http.Client {
 	c := http.DefaultClient
 	c.Timeout = 15 * time.Second
 	return c
 }
 
-func GetDepositsAfter(ctx context.Context, after time.Time) ([]deposit, error) {
+// getDepositsAfter makes a request to catalogURL, returning slice of deposits
+// since after. It assumes deposits are ordered by deposited_at_dtsi.
+func getDepositsAfter(ctx context.Context, after time.Time) ([]deposit, error) {
+
+	// attr is json-api attribute structure from Blacklight
+	type attr struct {
+		ID         string `json:"id"`
+		Type       string `json:"type"`
+		Attributes struct {
+			Value interface{} `json:"value"`
+			Label string      `json:"label"`
+		} `json:"attributes"`
+	}
+
+	// catalog entry
+	type catalogItem struct {
+		ID         string `json:"id"`
+		Type       string `json:"type"`
+		Attributes struct {
+			Title     attr `json:"title_tesim"`
+			Deposited attr `json:"deposited_at_dtsi"`
+		} `json:"attributes"`
+		Links struct {
+			Self string `json:"self"`
+		} `json:"links"`
+	}
+
+	// catalogResp is scholarsphere catalog.json response
+	type catalogResp struct {
+		Links struct {
+			Self string `json:"self"`
+			Next string `json:"next"`
+			Last string `json:"last"`
+		} `json:"links"`
+		Meta struct {
+			Pages struct {
+				CurrentPage int  `json:"current_page"`
+				NextPage    int  `json:"next_page"`
+				PrevPage    int  `json:"prev_page"`
+				TotalPages  int  `json:"total_pages"`
+				LimitValue  int  `json:"limit_value"`
+				OffsetValue int  `json:"offset_value"`
+				TotalCount  int  `json:"total_count"`
+				FirstPage   bool `json:"first_page?"`
+				LastPage    bool `json:"last_page?"`
+			} `json:"pages"`
+		} `json:"meta"`
+		Data []catalogItem `json:"data"`
+	}
+
 	var items []deposit
 	var pageCount int
 	url := catalogURL
@@ -133,22 +143,21 @@ func GetDepositsAfter(ctx context.Context, after time.Time) ([]deposit, error) {
 			}
 		}
 		if len(itemsAfter) == 0 {
-			// assumes items sorted by deposit date!
-			return items, nil
+			break
 		}
 		items = append(items, itemsAfter...)
 		if catResp.Meta.Pages.LastPage {
-			return items, nil
+			break
 		}
 		url = catResp.Links.Next
 		pageCount += 1
 	}
+	return items, nil
 }
 
-var ErrResourceNotFound = errors.New("resource not found")
-var ErrNotWork = errors.New("resource not a work")
-
-func GetWorkMeta(ctx context.Context, id string) (*workMeta, error) {
+// getWorkMeta returns metadata about a work from ScholarSphere's GraphQL
+// endpoint.
+func getWorkMeta(ctx context.Context, id string) (*workMeta, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -160,12 +169,13 @@ func GetWorkMeta(ctx context.Context, id string) (*workMeta, error) {
 	if err != nil {
 		var gqlErr graphql.Errors
 		if errors.As(err, &gqlErr) && strings.Contains(gqlErr.Error(), "404") {
-			return nil, fmt.Errorf("%s: %w", id, ErrResourceNotFound)
+			return nil, fmt.Errorf("%s: %w", id, errResourceNotFound)
 		}
 		return nil, err
 	}
+	// if the ID is empty, assume it's not a work (probably a Collection)
 	if query.Work.ID == "" {
-		return nil, fmt.Errorf("%s: %w", id, ErrNotWork)
+		return nil, fmt.Errorf("%s: %w", id, errNotWork)
 	}
 	return &query.Work, nil
 }
